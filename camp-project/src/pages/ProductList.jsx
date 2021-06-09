@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Icon, Label, Menu, Table } from "semantic-ui-react";
+import { Icon, Menu, Table } from "semantic-ui-react";
 import ProductService from "../services/productService";
+import { Link } from "react-router-dom";
 
 export default function ProductList() {
   //**Lifecycle  Hook */
@@ -27,7 +28,7 @@ export default function ProductList() {
         <Table.Body>
           {products.map((products) => (
             <Table.Row key={products.id}>
-              <Table.Cell>{products.productName}</Table.Cell>
+              <Table.Cell><Link to={`/products/${products.productName}`}>{products.productName}</Link></Table.Cell>
               <Table.Cell>{products.unitPrice}</Table.Cell>
               <Table.Cell>{products.unitsInStock}</Table.Cell>
               <Table.Cell>{products.quantityPerUnit}</Table.Cell>
