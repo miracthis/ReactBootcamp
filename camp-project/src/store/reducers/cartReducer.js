@@ -3,28 +3,28 @@ import { cartItems } from "../initialValues/cartItems";
 
 const initialState= {
 
-    cartItems: cartItems
+    cartItems: cartItems,
 
-}
+};
 
-//Payload gönderilecek ürün...
 
-export default function cartReducer(state=initialState, {type,payload}) {
+
+export default function cartReducer(state = initialState, {type,payload}) {
     switch (type) {
         case ADD_TO_CART:
             
-            let product = state.cartItems.find(c=>c.product.id===payload.id )
+            let product = state.cartItems.find((c) => c.product.id === payload.id);
             if (product) {
                 
                 product.quantity++;
                 return {
-                    ...state
-                }
+                    ...state,
+                };
 
             } else {
                 return {
                     ...state,
-                    cartItems:[...state.cartItems,payload]
+                    cartItems:[...state.cartItems, {quantity: 1, product: payload}]
                 }
             }
 

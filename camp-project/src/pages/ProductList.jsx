@@ -1,16 +1,29 @@
 import React, { useState } from "react";
-import { Icon, Menu, Table } from "semantic-ui-react";
+import { Button, Icon, Menu, Table } from "semantic-ui-react";
 import ProductService from "../services/productService";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/actions/cartActions";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 export default function ProductList() {
+  const dispatch = useDispatch();
+
   //**Lifecycle  Hook */
   const [products, setProducts] = useState([]);
 
-  useState(()=>{
-    let productService = new ProductService()
-    productService.getProducts().then(result=>setProducts(result.data.data))
-  },[])
+  useState(() => {
+    let productService = new ProductService();
+    productService
+      .getProducts()
+      .then((result) => setProducts(result.data.data));
+  }, []);
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success(`${product.productName} sepete eklendi`);
+  };
 
   return (
     <div>
@@ -21,18 +34,28 @@ export default function ProductList() {
             <Table.HeaderCell>Birim Fiyatı</Table.HeaderCell>
             <Table.HeaderCell>Stok Adedi</Table.HeaderCell>
             <Table.HeaderCell>Açıklama</Table.HeaderCell>
-            <Table.HeaderCell>Kategorip</Table.HeaderCell>
+            <Table.HeaderCell>Kategori</Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
         <Table.Body>
-          {products.map((products) => (
-            <Table.Row key={products.id}>
-              <Table.Cell><Link to={`/products/${products.productName}`}>{products.productName}</Link></Table.Cell>
-              <Table.Cell>{products.unitPrice}</Table.Cell>
-              <Table.Cell>{products.unitsInStock}</Table.Cell>
-              <Table.Cell>{products.quantityPerUnit}</Table.Cell>
-              <Table.Cell>{products.category.categoryName}</Table.Cell>
+          {products.map((product) => (
+            <Table.Row key={product.id}>
+              <Table.Cell>
+                <Link to={`/products/${product.productName}`}>
+                  {product.productName}
+                </Link>
+              </Table.Cell>
+              <Table.Cell>{product.unitPrice}</Table.Cell>
+              <Table.Cell>{product.unitsInStock}</Table.Cell>
+              <Table.Cell>{product.quantityPerUnit}</Table.Cell>
+              <Table.Cell>{product.category.categoryName}</Table.Cell>
+              <Table.Cell>
+                <Button onClick={() => handleAddToCart(product)}>
+                  Sepete Ekle
+                </Button>
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
@@ -48,7 +71,6 @@ export default function ProductList() {
                 <Menu.Item as="a">2</Menu.Item>
                 <Menu.Item as="a">3</Menu.Item>
                 <Menu.Item as="a">4</Menu.Item>
-                
               </Menu>
             </Table.HeaderCell>
           </Table.Row>
